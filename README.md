@@ -6,7 +6,7 @@ DHCP discover tool
 
 ## TODO
 - [x] interface option
-- [ ] timeout
+- [x] timeout
 - [ ] count option
-- [ ] RTT
+- [x] RTT
 - [ ] install cmd
