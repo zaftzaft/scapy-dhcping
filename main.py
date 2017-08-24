@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 import threading
+import argparse
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-i", "--iface", required=False, help="interface", default=None)
+
+args = parser.parse_args()
 
 seq = 0
 xid = random.randint(0, 0xFFFF)
@@ -30,7 +36,7 @@ def callback(pkt):
 
 
 def loop():
-    sniff(prn=callback, stop_filter = lambda x: seq == 1)
+    sniff(prn=callback, stop_filter = lambda x: seq == 1, iface=args.iface)
 
 sn = threading.Thread(target=loop, name="main")
 sn.start()
@@ -41,8 +47,8 @@ sendp(
     IP(src="0.0.0.0",dst="255.255.255.255")/
     UDP(sport=68,dport=67)/
     BOOTP(chaddr="0.0.0.0",xid=xid)/
-    DHCP(options=[('message-type','discover'),('end')])
-    ,verbose=False
+    DHCP(options=[('message-type','discover'),('end')]),
+    verbose=False, iface=args.iface
 )
 
 
